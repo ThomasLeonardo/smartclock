@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import br.ufpe.nti.pojo.Time;
 import br.ufpe.nti.util.*;
 
 @RestController
@@ -36,9 +38,9 @@ public class Routes
     }
     
     @RequestMapping(value = "/clock", method = RequestMethod.POST)
-    public ResponseEntity<String> postClock(@RequestParam String time)
+    public ResponseEntity<String> postClock(@RequestBody Time time)
     {
-        LocalTime inputTime = LocalTime.parse(time);
+        LocalTime inputTime = LocalTime.parse(time.getTime());
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, inputTime.getHour());
         cal.set(Calendar.MINUTE, inputTime.getMinute());
