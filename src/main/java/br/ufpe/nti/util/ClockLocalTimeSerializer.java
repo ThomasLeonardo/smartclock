@@ -15,7 +15,6 @@ public class ClockLocalTimeSerializer extends JsonSerializer<LocalTime> {
 	public void serialize(LocalTime value, JsonGenerator gen, SerializerProvider serializers)
 			throws IOException, JsonProcessingException {
 		gen.writeString(value.format(DateTimeFormatter.ofPattern("HH:mm")));
-
 	}
 
 }
