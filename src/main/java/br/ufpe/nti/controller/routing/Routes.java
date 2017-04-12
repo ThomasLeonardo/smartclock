@@ -1,9 +1,11 @@
 package br.ufpe.nti.controller.routing;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.Calendar;
+import java.util.Date;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,42 +22,27 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import br.ufpe.nti.util.*;
 
-@Controller
+@RestController
 public class Routes
 {
     
     @RequestMapping(value = "/clock", method = RequestMethod.GET)
     public ResponseEntity<String> getClock()
     {
-        DateFormat dateAndTime = new SimpleDateFormat("YYYY/MM/DD HH:mm:ss");
-        DateFormat time = new SimpleDateFormat("HH:mm");
         Calendar cal = Calendar.getInstance();
-        
-        final HttpHeaders httpHeaders= new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        double angleHour = 0.5 * (60 * (cal.get(Calendar.HOUR + 1)) + cal.get(Calendar.MINUTE));
-        double angleMinute = 6 * cal.get(Calendar.MINUTE);
-        double angle = Math.abs(angleHour - angleMinute);
-        
-        JSONObject response = new JSONObject();
-        try {
-            response.put("id", "null");
-            response.put("time", time.format(cal.getTime()));
-            response.put("createdAt", dateAndTime.format(cal.getTime()));
-            response.put("angle", angle);
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return new ResponseEntity<String>(response.toString(), httpHeaders , HttpStatus.OK);
+        return CalendarToResponseEntityFormatter.formatCalendar(cal);
     }
     
     @RequestMapping(value = "/clock", method = RequestMethod.POST)
-    @ResponseBody
-    public String postClock()
+    public ResponseEntity<String> postClock(@RequestParam String time)
     {
-        return "hello!";
+        LocalTime inputTime = LocalTime.parse(time);
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, inputTime.getHour());
+        cal.set(Calendar.MINUTE, inputTime.getMinute());
+        return CalendarToResponseEntityFormatter.formatCalendar(cal);
     }
     
 }
